@@ -1,6 +1,7 @@
 package com.example.myapp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class MyController {
     }
 
     @PostMapping("/submit")
-    @Operation(summary = "Submit Data", description = "Receives data and returns a confirmation message + the data.")
+    @Operation(summary = "Submit Data", description = "Receives data and returns a confirmation message + data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Data successfully received."),
             @ApiResponse(responseCode = "400", description = "Bad request, invalid data.")
@@ -35,7 +36,7 @@ public class MyController {
             @ApiResponse(responseCode = "200", description = "User ID retrieved successfully."),
             @ApiResponse(responseCode = "400", description = "Invalid user ID provided.")
     })
-    public ResponseEntity<String> getUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<String> getUserById(@PathVariable("id") @RequestParam(name = "query", defaultValue = "1") @Parameter(description = "Search ID") Long id) {
         if (id <= 0) {
             return ResponseEntity.badRequest().body("Invalid user ID, it must be a positive number.");
         }
@@ -44,7 +45,7 @@ public class MyController {
 
     @GetMapping("/search")
     @Operation(summary = "Search Users", description = "Searches for users or data based on the query parameter.")
-    public ResponseEntity<String> search(@RequestParam(name = "query", defaultValue = "") String query) {
+    public ResponseEntity<String> search(@RequestParam(name = "query", defaultValue = "Hello") @Parameter(description = "Search data") String query) {
         if (query.isBlank()) {
             return ResponseEntity.ok("No query provided.");
         }
